@@ -14,5 +14,7 @@ namespace GeneralStoreWebApi.Models
         public virtual Product Product { get; set; }
         public int ItemCount { get; set; }
         public DateTime DateOfTransaction { get; set; }
+
+
     }
 }
