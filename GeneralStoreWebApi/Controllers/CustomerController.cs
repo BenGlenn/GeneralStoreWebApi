@@ -46,7 +46,7 @@ namespace GeneralStoreWebApi.Controllers
         public IHttpActionResult Get(int id)
         {
             Customer customer = _context.Customers.Find(id);
-            if(customer == null)
+            if (customer == null)
             {
                 return NotFound();
             }
@@ -56,7 +56,38 @@ namespace GeneralStoreWebApi.Controllers
 
 
         // Put {id} -- Update By ID
+        public IHttpActionResult Put(int id, Customer updatedCustomer)
+        {
+            if (ModelState.IsValid)
+            {
+                Customer customer = _context.Customers.Find(id);
+                if (customer != null)
+                {
+                    customer.FirstName = updatedCustomer.FirstName;
+                    customer.LastName = updatedCustomer.LastName;
+                    _context.SaveChanges();
+                    return Ok("Customer has been updated.");
+                }
+                return NotFound();
+            }
+            return BadRequest(ModelState);
+        }
 
         // Delete{id} -- Delete By ID
+
+        public IHttpActionResult Delete(int id)
+        {
+            Customer entity = _context.Customers.Find(id);
+            if (entity == null)
+            {
+                return NotFound();
+            }
+            _context.Customers.Remove(entity);
+            if (_context.SaveChanges() == 1)
+            {
+                return Ok("The customer was deleted.");
+            }
+            return InternalServerError();
+        }
     }
 }

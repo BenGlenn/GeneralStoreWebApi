@@ -55,6 +55,38 @@ namespace GeneralStoreWebApi.Controllers
 
         //Put {id}
 
+        public IHttpActionResult Put(int id, Transaction updatedTransaction)
+        {
+            if (ModelState.IsValid)
+            {
+                Transaction transaction = _context.Transactions.Find(id);
+                if (transaction != null)
+                {
+                    transaction.ProductSKU = updatedTransaction.ProductSKU;
+                    transaction.ItemCount = updatedTransaction.ItemCount;
+                    transaction.DateOfTransaction = updatedTransaction.DateOfTransaction;
+                    _context.SaveChanges();
+                    return Ok("Transaction has been updated.");
+                }
+                return NotFound();
+            }
+            return BadRequest(ModelState);
+        }
+
         //Delete{id}
+        public IHttpActionResult Delete(int id)
+        {
+            Transaction entity = _context.Transactions.Find(id);
+            if (entity == null)
+            {
+                return NotFound();
+            }
+            _context.Transactions.Remove(entity);
+            if (_context.SaveChanges() == 1)
+            {
+                return Ok("The Transaction was deleted.");
+            }
+            return InternalServerError();
+        }
     }
 }

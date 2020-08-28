@@ -57,8 +57,44 @@ namespace GeneralStoreWebApi.Controllers
 
 
         //Put {id}
+        public IHttpActionResult Put(string sku, Product updatedProduct) // We don't have to update all the required properties, we just need to pass all of them
+                                                                         // through the method for the ModelState to be valid??
+        {
+            if (ModelState.IsValid)
+            {
+                Product product = _context.Products.Find(sku);
+                if (product != null)
+                {
+                    product.Name = updatedProduct.Name;
+                    product.Cost = updatedProduct.Cost;
+                    product.NumberInInventory = updatedProduct.NumberInInventory;
+                    _context.SaveChanges();
+                    return Ok("This Product has been updated.");
+                }
+                return NotFound();
+            }
+            return BadRequest(ModelState);
+        }
 
         //Delete{id}
+
+        public IHttpActionResult DeleteProduct(string sku)
+        {
+            Product entity = _context.Products.Find(sku);
+            if (entity == null)
+            {
+                return NotFound();
+            }
+            _context.Products.Remove(entity);
+            if (_context.SaveChanges() == 1)
+            {
+                return Ok("Your Product was deleted.");
+            }
+            return InternalServerError();
+        }
+
+
+
 
         private string GenerateSku(string productName)
         {
